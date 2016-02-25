@@ -19,4 +19,8 @@ class AlphabetCipherSpec extends FlatSpec with Matchers {
     assert(AlphabetCipher.cypherKey("scones", 3) === "sco")
     assert(AlphabetCipher.cypherKey("scones", 15) === "sconessconessco")
   }
+
+  it should "encode the message" in {
+    assert(AlphabetCipher.cipher("scones", "meetmebythetree") === "egsgqwtahuiljgs")
+  }
 }

@@ -1,4 +1,8 @@
 object AlphabetCipher {
+  def cipher(s: String, s1: String): String = {
+    cypherKey(s,s1.length).zip(s1).map((encode _).tupled).mkString
+  }
+
   def cypherKey(pass: String, length: Int) = {
     (pass * (length / pass.length + 1)).take(length)
   }
