@@ -1,8 +1,10 @@
 object AlphabetCipher {
   def encode(row: Char, column: Char): Char = {
     val rowDesp = row - 'a'
-    val colDesp = column - 'a'
-    ('a' + rowDesp + colDesp).toChar
+    val columnDesp = column - 'a'
+    val numLetters = 'z' - 'a' + 1
+    val totalDesp = (rowDesp + columnDesp) % numLetters
+    ('a' + totalDesp).toChar
   }
 
 }
