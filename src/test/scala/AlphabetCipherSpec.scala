@@ -14,4 +14,9 @@ class AlphabetCipherSpec extends FlatSpec with Matchers {
     assert(AlphabetCipher.encode('z','a') === 'z')
     assert(AlphabetCipher.encode('z','z') === 'y')
   }
+
+  it should "return the password with the rigth length" in {
+    assert(AlphabetCipher.cypherKey("scones", 3) === "sco")
+    assert(AlphabetCipher.cypherKey("scones", 15) === "sconessconessco")
+  }
 }
