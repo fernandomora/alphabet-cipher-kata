@@ -23,4 +23,16 @@ class AlphabetCipherSpec extends FlatSpec with Matchers {
   it should "encode the message" in {
     assert(AlphabetCipher.cipher("scones", "meetmebythetree") === "egsgqwtahuiljgs")
   }
+
+  it should "decode a given character when combined with Z" in {
+    assert(AlphabetCipher.decode('z', 'e') === 'f')
+    assert(AlphabetCipher.decode('a', 'c') === 'c')
+    assert(AlphabetCipher.decode('z', 'y') === 'z')
+    assert(AlphabetCipher.decode('s', 'e') === 'm')
+  }
+
+  it should "decode the message" in {
+    assert(AlphabetCipher.decipher("scones", "egsgqwtahuiljgs") === "meetmebythetree")
+  }
+
 }
