@@ -1,8 +1,11 @@
 object AlphabetCipher {
   def decipher(pass: String, codedMessage: String) = {
-    cypherKey(pass,codedMessage.length).zip(codedMessage).map((decode _).tupled).mkString
+    applyFunction(decode)(pass, codedMessage)
   }
 
+  private def applyFunction(f: (Char, Char) => Char)(pass: String, message: String) = {
+    cypherKey(pass,message.length).zip(message).map( f.tupled ).mkString
+  }
 
   def decode(row: Char, column: Char) = {
     val numLetters = 'z' - 'a' + 1
@@ -10,12 +13,13 @@ object AlphabetCipher {
     ('a' + desp).toChar
   }
 
-  def cipher(s: String, s1: String): String = {
-    cypherKey(s,s1.length).zip(s1).map((encode _).tupled).mkString
+  val cipher: (String, String) => String = {
+    applyFunction(encode)
   }
 
   def cypherKey(pass: String, length: Int) = {
-    (pass * (length / pass.length + 1)).take(length)
+    Stream.continually(pass.toStream).flatten.take(length).toList.mkString
+    //(pass * (length / pass.length + 1)).take(length)
   }
 
   def encode(row: Char, column: Char): Char = {
