@@ -1,5 +1,7 @@
+import scala.collection.immutable.NumericRange.Inclusive
+
 object AlphabetCipher {
-  private val alphabet = 'a' to 'z'
+  private val alphabet: Inclusive[Char] = 'a' to 'z'
 
   private def transformMessage(transformCharWithKey: (Char, Char) => Char)(pass: String, message: String): String =
     key(pass).zip(message).map(transformCharWithKey.tupled).mkString
@@ -11,9 +13,11 @@ object AlphabetCipher {
   def decipher(pass: String, codedMessage: String): String = transformMessage(vigenèreCipher(_ - _))(pass, codedMessage)
 
   private def vigenèreCipher(op: (Int, Int) => Int)(key: Char, char: Char): Char = {
-    def alphabetCharToInt(c: Char): Int = c - alphabet(0)
-    def intToAlphabetChar(n: Int): Char = (n + alphabet(0)).toChar
-    intToAlphabetChar(Math.floorMod(op(alphabetCharToInt(char), alphabetCharToInt(key)), alphabet.size))
+    alphabet(
+      Math.floorMod(
+        op(alphabet.indexOf(char), alphabet.indexOf(key)),
+        alphabet.size)
+    )
   }
 }
 
