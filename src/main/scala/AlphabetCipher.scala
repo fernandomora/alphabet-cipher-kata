@@ -1,33 +1,25 @@
 object AlphabetCipher {
-  def decipher(pass: String, codedMessage: String) = {
-    applyFunction(decode)(pass, codedMessage)
-  }
+  private val alphabet = 'a' to 'z'
+  private val alphabetSize = alphabet.size
 
-  private def applyFunction(f: (Char, Char) => Char)(pass: String, message: String) = {
-    cypherKey(pass,message.length).zip(message).map( f.tupled ).mkString
+  private def transformMessage(transformCharWithKey: (Char,Char) => Char)
+                              (pass: String, message: String): String = {
+    key(pass).zip(message).map{
+      case (key, char) => transformCharWithKey(key, char)
+    }.mkString
   }
+  
+  def cipher(pass: String, decodedMessage: String): String = transformMessage(encodeCharWithKey)(pass, decodedMessage)
+  def decipher(pass: String, codedMessage: String): String = transformMessage(decodeCharWithKey)(pass, codedMessage)
 
-  def decode(row: Char, column: Char) = {
-    val numLetters = 'z' - 'a' + 1
-    val desp = (column - row + numLetters) % numLetters
-    ('a' + desp).toChar
-  }
-
-  val cipher: (String, String) => String = {
-    applyFunction(encode)
-  }
-
-  def cypherKey(pass: String, length: Int) = {
-    Stream.continually(pass.toStream).flatten.take(length).toList.mkString
-    //(pass * (length / pass.length + 1)).take(length)
-  }
-
-  def encode(row: Char, column: Char): Char = {
-    val rowDesp = row - 'a'
-    val columnDesp = column - 'a'
-    val numLetters = 'z' - 'a' + 1
-    val totalDesp = (rowDesp + columnDesp) % numLetters
-    ('a' + totalDesp).toChar
-  }
+  def key(pass: String): Stream[Char] = Stream.continually(pass.toStream).flatten
+  private def alphabetCharToInt(c: Char): Int = c - alphabet(0)
+  private def intToAlphabetChar(n: Int): Char = (n + alphabet(0)).toChar
+  private val encodeOp: (Int,Int) => Int = _ + _
+  private val decodeOp: (Int,Int) => Int = _ - _
+  private def transformCharWithKey(key: Char, char: Char)(op: (Int,Int) => Int): Char = intToAlphabetChar(Math.floorMod(op(alphabetCharToInt(char), alphabetCharToInt(key)),alphabetSize))
+  def decodeCharWithKey(key:Char, char: Char): Char = transformCharWithKey(key,char)(decodeOp)
+  def encodeCharWithKey(key:Char, char: Char): Char = transformCharWithKey(key,char)(encodeOp)
 
 }
+
